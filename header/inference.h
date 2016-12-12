@@ -3,11 +3,8 @@
 #include "model.h"
 #include "globals.h"
 namespace Inference {
-//    enum State{cooperative, normal, aggressive};
-//    vector<string> intentions{"cooperative","normal","aggressive"};
-//    UMAP<string, int> Intention_To_Index{{"cooperative",0},{"normal",1},{"aggressive",2}};
-    
-    //to produce the permuation of a list of states
+
+    //a helper function to produce the permuation of a list of states
     vector<vector<string>> product(const vector<string>& states, int repeat = 2) {
         vector<vector<string>> res(states.size());
         vector<vector<string>> output;

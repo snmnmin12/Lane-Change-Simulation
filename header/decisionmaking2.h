@@ -11,15 +11,10 @@ float colToX(int col){return (col + 0.5) * Globals::constant.BELIEF_TILE_SIZE;}
 
 class DecisionAgent2 {
     /*
-     This class provides some common elements to all of your
-     multi-agent searchers.  Any methods defined here will be available
+    This is the decisona making module, it takes take the search class, and search paths, then evalute the search paths
+    to select the best path to execute for lane change process
      */
-    /*
-     Note: this is an abstract class: one that should not be instantiated.  It's
-     only partially specified, and designed to be extended.  Agent (game.py)
-     is another abstract class.
-     """
-     */
+
 private:
     int depth;
     unsigned int index;

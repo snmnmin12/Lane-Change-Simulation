@@ -22,9 +22,6 @@ depends on the applications, the cost function is adjusted to suit the best
 #include "model.h"
 #include "vec2D.h"
 #include "car.h"
-
-
-
 using std::ostream;
 using std::vector;
 typedef Vector2d<float>  vec2f;
@@ -54,13 +51,7 @@ struct State{
         heu = s.heu;
         return *this;
     }
-//    State& operator=(State&& s) {
-//            current = std::move(s.current);
-//        actions = std::move(actions);
-//            cost = std::move(s.cost);
-//            heu = std::move(s.heu);
-//        return *this;
-//    }
+
     friend ostream& operator<<(ostream& os, const State& s);
     bool operator<(const State& s2) const {return (cost+heu) > (s2.cost+s2.heu);}
 };
@@ -102,9 +93,6 @@ private:
     float cost;
     vector<float> angle;
     vector<vec2f> pa;
-//enum {left90, left45, strainght, right45, right90};
-//float angle[9] = {60, 45, 30, 15, 0, -15, -30, -45, -60};
-// enum {east, north, west, south};
 };
 
 Search::Search(Model*m, const vec2f& goal):model(m) {
@@ -130,10 +118,6 @@ bool Search::isGoal(State& s){
 
 vector<vec2f> Search::path(list<char>& actions) {
 vector<vec2f> result;
-//    vec2f pos = start.current.first;
-//    vec2f olddir = start.current.second;
-//    vec2f velocity = olddir*float(unitdistanace);
-//    Car car(pos, olddir, velocity);
     State state = start;
     vec2f pos = state.current.first;
     vec2f olddir =  state.current.second;
@@ -266,9 +250,8 @@ void Search::smooth() {
             if (i <= pa.size()-3)
                 result[i][j] += 0.5*weight_smooth*(2.0*result[i+1][j]-result[i+2][j]-result[i][j]);
             change += abs(aux - result[i][j]);
-    }
-    }
-
+         }
+        }
     }
     pa = result;
 

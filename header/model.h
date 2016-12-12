@@ -169,10 +169,8 @@ private:
 };
 
 /*
- 
- Car object initilization now
- 
- */
+car object initializations
+*/
 
 static UMAP<string, pff> direction = {
     {"east", {1, 0}},
