@@ -9,12 +9,10 @@
 #ifndef KdTree_hpp
 #define KdTree_hpp
 
-
 template <typename T>
 class point {
 public:
     T x, y;
-    
     point() : x(0), y(0) {};
     point(T x, T y) : x(x), y(y) {};
     point(const point& p) : x(p.x), y(p.y) {};
@@ -22,7 +20,6 @@ public:
     inline double distance(const point& p) {
         double dx = this->x - p.x;
         double dy = this->y - p.y;
-        
         return std::sqrt(dx * dx + dy * dy);
     }
     
@@ -39,9 +36,8 @@ public:
         return os;
     }
 };
+
 typedef point<int> pointi;
-
-
 namespace kdtree {
     template <typename T>
     class node {
@@ -49,37 +45,8 @@ namespace kdtree {
         T point;
         node<T> *left = NULL;
         node<T> *right = NULL;
-        
-        ///-----------------------------------------------------------------------
-        /// @name Constructor
-        ///-----------------------------------------------------------------------
-        /**
-         *  Initialize node having a point.
-         *
-         *  @param point  A point.
-         *
-         *  @return Initialized node instance.
-         */
         node(T point) : point(point) {}
-        
-        /**
-         *  Initialize node as a root of a kdtree with specified points.
-         *
-         *  @param points  A vector of points.
-         *
-         *  @return Initialized node instance.
-         */
         node(std::vector<T> points) : node<T>(&points[0], (int)points.size(), 0) {}
-        
-        /**
-         *  Initialize node as a root of a kdtree with specified points.
-         *
-         *  @param points  An array of points.
-         *  @param size    A size of the array.
-         *  @param depth   The depth of current node. (For internal use)
-         *
-         *  @return Initialized node instance.
-         */
         node(T *points, int size, int depth = 0) {
             if (size == 1) {
                 this->point = *points;
@@ -94,7 +61,6 @@ namespace kdtree {
                 std::sort(points, points + size, [](T const& a, T const& b) { return a.y < b.y; });
             }
             
-            // Determine a point to divide
             int median = size / 2;
             this->point = *(points + median);
             
@@ -107,34 +73,15 @@ namespace kdtree {
             }
         }
         
-        ///-----------------------------------------------------------------------
-        /// @name Destructor
-        ///-----------------------------------------------------------------------
-        /**
-         *  Delete node object.
-         */
         ~node() {
             if (this->has_left_node()) delete this->left;
             if (this->has_right_node()) delete this->right;
         }
         
-        ///-----------------------------------------------------------------------
-        /// @name Helper Methods
-        ///-----------------------------------------------------------------------
-        /**
-         *  Indicates whether the node has the left node.
-         *
-         *  @return Return true if the node has the left node, and return false if the node doesn't have the left node.
-         */
         inline bool has_left_node() {
             return (this->left != NULL);
         }
-        
-        /**
-         *  Indicates whether the node has the right node.
-         *
-         *  @return Return true if the node has the right node, and return false if the node doesn't have the right node.
-         */
+       
         inline bool has_right_node() {
             return (this->right != NULL);
         }
@@ -148,13 +95,6 @@ namespace kdtree {
             return (!this->has_left_node() && !this->has_right_node());
         }
         
-        /**
-         *  Calculate a distance between the receiver and the specified node.
-         *
-         *  @param node  A pointer to the node.
-         *
-         *  @return A distance between two nodes.
-         */
         inline double distance(node<T> *node) {
             double dx = this->point.x - node->point.x;
             double dy = this->point.y - node->point.y;
@@ -162,13 +102,6 @@ namespace kdtree {
             return std::sqrt(dx * dx + dy * dy);
         }
         
-        /**
-         *  Calculate a distance between the receiver and the specified point.
-         *
-         *  @param point  A point.
-         *
-         *  @return A distance between the receiver and the point.
-         */
         inline double distance(T point) {
             double dx = this->point.x - point.x;
             double dy = this->point.y - point.y;
@@ -176,29 +109,10 @@ namespace kdtree {
             return std::sqrt(dx * dx + dy * dy);
         }
         
-        /**
-         *  Get a closer node to the receiver.
-         *
-         *  @param a  A pointer to node1.
-         *  @param b  A pointer to node2.
-         *
-         *  @return The closer node to the receiver.
-         */
         inline node<T> * closer(node<T> *a, node<T> *b) {
             return this->distance(a) < this->distance(b) ? a : b;
         }
         
-        ///-----------------------------------------------------------------------
-        /// @name Nearest Neighbor Search
-        ///-----------------------------------------------------------------------
-        /**
-         *  Search for the nearest neighbor in the tree.
-         *
-         *  @param query_point  A query point.
-         *  @param depth        The depth of current node. (For internal use)
-         *
-         *  @return The nearest neighbor node.
-         */
         node<T> * nearest(T query_point, const int depth = 0) {
             node<T> *query = new node<T>(query_point);
             node<T> *nearest = this->nearest(query, depth);
@@ -455,37 +369,10 @@ namespace kdtree {
     class kdtree {
     public:
         node<T> *root;
-        
-        ///-----------------------------------------------------------------------
-        /// @name Constructor
-        ///-----------------------------------------------------------------------
-        /**
-         *  Initialize kdtree.
-         *
-         *  @param points  A vector of points.
-         *
-         *  @return Initialized kdtree instance.
-         */
         kdtree(std::vector<T> points) : kdtree<T>(&points[0], (int)points.size()) {}
-        
-        /**
-         *  Initialize kdtree.
-         *
-         *  @param points  An array of points.
-         *  @param size    A size of the array.
-         *
-         *  @return Initialized kdtree instance.
-         */
         kdtree(T *points, int size) {
             this->root = new node<T>(points, size);
         }
-        
-        ///-----------------------------------------------------------------------
-        /// @name Destructor
-        ///-----------------------------------------------------------------------
-        /**
-         *  Delete kdtree object.
-         */
         ~kdtree() {
             delete this->root;
         }
@@ -567,6 +454,4 @@ namespace kdtree {
         }
     };
 }
-
-
 #endif /* KdTree_hpp */
