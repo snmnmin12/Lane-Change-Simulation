@@ -1,11 +1,8 @@
-////
-////  main.cpp
-////  TestOpenGL
-////
 ////  Created by HJKBD on 8/20/16.
 ////  Copyright © 2016 HJKBD. All rights reserved.
-////
-//
+/*
+This is the main page to start the programs
+*/
 #include <iostream>
 #include "header/picojson.h"
 #include "header/layout.h"
@@ -51,8 +48,6 @@ void drawPolygon(vector<Vector2f>& polygonvertices){
     glPopAttrib();
     delete[] vertices;
 }
-
-
 
 int main(void) {
     //load the map for running testing examples
