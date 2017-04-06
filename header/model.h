@@ -12,6 +12,7 @@
 #include "vec2D.h"
 #include "KdTree.hpp"
 #include "layout.h"
+//#include "inference.h"
 
 class Car;
 using std::vector;
@@ -59,6 +60,7 @@ static float manhattanDistance(const Vector2f& v1, const Vector2f& v2) {
 
 struct Line {
     int x1,y1,x2,y2;
+    Line(float _x1, float _y1, float _x2, float _y2):x1(_x1),y1(_y1),x2(_x2),y2(_y2){}
     Line(vector<int>& row) {
         x1 = row[0] * (Globals::constant.BLOCK_TILE_SIZE);
         y1 = row[1] * (Globals::constant.BLOCK_TILE_SIZE);
@@ -169,8 +171,10 @@ private:
 };
 
 /*
-car object initializations
-*/
+ 
+ Car object initilization now
+ 
+ */
 
 static UMAP<string, pff> direction = {
     {"east", {1, 0}},
@@ -489,7 +493,7 @@ void Car:: init() {
 }
 void Car::setup() {
     maxSpeed = 5.0;
-    friction = 2.0;
+    friction = 0.5;
     maxWheelAngle = 130.0;
     maxaccler = 2.0;
     minSpeed = 1;
@@ -650,8 +654,8 @@ bool Car::isCloseToOtherCar(const Model& model) const {
 
 
 void  Host::setup() {
-    maxSpeed = 2.0;
-    friction = 1.0;
+    maxSpeed = 3.0;
+    friction = 1;
     maxWheelAngle = 45;
     maxaccler = 1.5;
     minSpeed = 1;
@@ -876,8 +880,8 @@ UMAP<string, float> Host::getAutonomousActions(const vector<Vector2f>& path, con
 
 void Agent::setup()
 {
-    maxSpeed = 2.0;
-    friction = 1.0;
+    maxSpeed = 3.0;
+    friction = 1;
     maxWheelAngle = 45;
     maxaccler = 1.4;
     minSpeed = 1;
@@ -918,8 +922,8 @@ void Agent::autonomousAction(const vector<Vector2f>& vec2, const Model& model, k
     unsigned int i = 1;
     Car* host = model.getHost();
     //conservative driver will yield
-//    if ((host->getPos().x < this->getPos().x + Car::LENGTH*4) && (host->getPos().x > this->getPos().x))
-//        i = 0;
+    if ((host->getPos().x < this->getPos().x + Car::LENGTH*4) && (host->getPos().x > this->getPos().x))
+        i = 0;
     switch (i) {
         case 0:
             accelerate(friction);

@@ -3,8 +3,11 @@
 #include "model.h"
 #include "globals.h"
 namespace Inference {
-
-    //a helper function to produce the permuation of a list of states
+//    enum State{cooperative, normal, aggressive};
+//    vector<string> intentions{"cooperative","normal","aggressive"};
+//    UMAP<string, int> Intention_To_Index{{"cooperative",0},{"normal",1},{"aggressive",2}};
+    
+    //to produce the permuation of a list of states
     vector<vector<string>> product(const vector<string>& states, int repeat = 2) {
         vector<vector<string>> res(states.size());
         vector<vector<string>> output;
@@ -72,7 +75,25 @@ namespace Inference {
         }
     };
 
-    
+    //to build the joint particles for processing
+//    class JointParticles {
+//    private:
+//        int numParticles;
+//        int numAgents;
+//        vector<string> legalIntentions;
+//        vector<Car*> agents;
+//        Counter<vector<string>> beliefs;
+//        vector<vector<string>> particles;
+//    public:
+//        JointParticles(int num=600):numParticles(num),numAgents(0){};
+//        void initializeUniformly(const Model& model,const vector<string>& intentions);
+//        void initializeParticles();
+//        void observe(const Model& model);
+//        Counter<vector<string>> getBelief();
+//        vector<string> sample( Counter<vector<string>>& counter);
+//        pff getMeanStandard(queue<float>&history, const string& intention);
+//    };
+//    
     void JointParticles::initializeUniformly(const Model& model, const vector<string>& intentions) {
         //stores infomraiton about the game, then initialize the particles
         numAgents = model.getOtherCars().size();
@@ -163,6 +184,8 @@ namespace Inference {
     }
     pff JointParticles::getMeanStandard(queue<float>&history, const string& intention) {
         int total = history.front();
+//        for (int i = 0; i < history.size(); i++)
+//            total += history[i];
         float vref = total;
         if (vref == 0) vref = 0.01;
         float sigma = 0.3*vref;
@@ -171,9 +194,46 @@ namespace Inference {
             return pff(0.7*vref, sigma);
         else if (index == 1)
             return pff(vref, sigma);
+//        else if (index == 2)
+//            return pff(1.5*vref,sigma);
         return pff(0, 0);
     }
-
+    //to construct a joint inference array
+//    JointParticles jointInference = JointParticles();
+//    class MarginalInference {
+//    private:
+//        vector<string> legalIntentions;
+//        int index;
+//    public:
+//        MarginalInference(int index, const Model& model) {
+//            this->index = index;
+//            legalIntentions = intentions;
+//            initializeUniformly(model);
+//        }
+//        
+//        void initializeUniformly(const Model& gameState) {
+//            if (index == 1)
+//                jointInference.initializeUniformly(gameState, legalIntentions);
+//        }
+//        
+//        void observe(const Model& gameState) {
+//            if (index == 1)
+//                jointInference.observe(gameState);
+//        }
+//        vector<float> getBelief() {
+//            Counter<vector<string>> jointDistribution = jointInference.getBelief();
+//            Counter<int> dist = Counter<int>();
+//            for (const auto& item: jointDistribution) {
+//                int i = Intention_To_Index[item.first[index-1]];
+//                dist[i] += item.second;
+//            }
+//            vector<float> result = vector<float>();
+//            result.resize(legalIntentions.size());
+//            for (const auto& item: dist)
+//                result[item.first] = item.second;
+//            return result;
+//        }
+//    };
     MarginalInference::MarginalInference(int index, const Model& model) {
         this->index = index;
         legalIntentions = intentions;
@@ -200,6 +260,8 @@ namespace Inference {
         result.resize(legalIntentions.size());
         for (const auto& item: dist)
             result[item.first] = item.second;
+//        if (result[0]>result[1])
+//            cout<<"I am here"<<endl;
         return result;
     }
 }

@@ -42,7 +42,7 @@ Layout::Layout(std::string worldname) {
 void Layout::loadData(std::string worldname){
     //read file and load file
     std::string filename = worldname + ".json";
-    std::string layoutpath = "layout/"+filename;
+    std::string layoutpath = "../layout/"+filename;
     std::ifstream infile(layoutpath);
     if (infile) {
         infile>>data;

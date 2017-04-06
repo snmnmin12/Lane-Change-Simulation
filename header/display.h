@@ -8,7 +8,6 @@
 #include "globals.h"
 #include "vec2D.h"
 #include "model.h"
-#include "mdp.h"
 #include <algorithm>
 #include <iomanip>
 #include <cmath>
@@ -81,8 +80,12 @@ public:
         rectangle(car->getPos(), Car::WIDTH, Car::LENGTH, color, &dir);
     }
     
-    static void colorChange() {
-        
+    void drawCars(vector<Car*>& cars) {
+        Color color = Display::BLUE;
+        for (Car*car: cars) {
+         Vector2f dir = car->getDir();
+         rectangle(car->getPos(), Car::WIDTH, Car::LENGTH, color, &dir);
+        }
     }
     
     void drawOtherCar(const vector<Car*>& cars){
@@ -93,7 +96,11 @@ public:
         for(Block block : graph)
             rectangle(block.getCenter(), block.getHeight(), block.getWidth(), Display::BLUE,NULL, 1.0);
     }
-        
+    
+    static void drawTriagnle(vector<Vector2f>& triangles) {
+        triangle(triangles, Display::YELLOW, 1);
+    }
+    
     //draw the rectangle
     static void rectangle(Vector2f pos, int length, int width, Color color, Vector2f* dir = NULL, int filled = 1, int thickness = 0) {
         
@@ -131,6 +138,32 @@ public:
         glPopAttrib();
         
     }
+    
+    static void triangle(vector<Vector2f> pos, Color color, int filled = 1, int thickness = 0) {
+        
+
+        float polygonvertices[8];
+        for (int i = 0; i < 3; i++)
+        {
+            polygonvertices[2*i] = pos[i].x;
+            polygonvertices[2*i+1] = pos[i].y;
+        }
+        
+        glPushAttrib( GL_POLYGON_BIT);
+        glPushAttrib(GL_LINE_BIT);
+        if (thickness!=0) glLineWidth(thickness);
+        if (filled == 0) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        else glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glColor3f(color.r, color.g, color.b);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glVertexPointer(2, GL_FLOAT, 0, polygonvertices);
+        glDrawArrays(GL_POLYGON, 0, 3);
+        glDisableClientState(GL_VERTEX_ARRAY);
+        glPopAttrib();
+        
+    }
+    
+    
     static void line(Vector2f here, Vector2f there, const Color& color, int width=1, pii dash = pii(4,4)){
         GLfloat polygonvertices[4] = {
               here[0], here[1], there[0], there[1]
@@ -205,4 +238,5 @@ const Color Display::GREEN = {0.16f, 0.49f, 0.31f};
 const Color Display::BLUE = {0.0f, 0.0f, 1.0f};
 const Color Display::BLACK = {0.0f, 0.0f, 0.0f};
 const Color Display::YELLOW = {0.0f, 1.0f, 1.0f};
+
 #endif

@@ -33,6 +33,8 @@ typedef std::pair<int, int> pii;
 typedef std::pair<float, float> pff;
 typedef Vector2d<float> Vector2f;
 
+
+
 //set counter class
 template<class Key>
 class Counter:public std::UMAP<Key, float>
@@ -66,9 +68,9 @@ public:
         float total = sum();
         for (auto it = this->begin(); it != this->end(); it++)
             this->at(it->first) = it->second/total;
-//             it->second = it->second/total;
     }
 };
+
 
 namespace Globals {
     extern const double INF;
@@ -87,7 +89,7 @@ namespace Globals {
         BELIEF_TILE_SIZE(30)
         {}
     };
-
+    
     template<class T>
     inline void hash_combine(size_t& seed, const T& v) {
         std::hash<T> hasher;
@@ -120,5 +122,7 @@ namespace std {
 }
 namespace Globals {
     Constant constant;
+//    const double INF = 1e8;
+//    const double TINY = 1e-8;
 } // namespace
 #endif
