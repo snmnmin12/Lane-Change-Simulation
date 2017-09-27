@@ -20,16 +20,15 @@
 #include <iomanip>
 #include <fstream>
 using namespace std;
-//#include "header/mdp.h"
 #include "KdTree.hpp"
 #include "header/decisionmaking2.h"
 #include "header/util.h"
 
 GLFWwindow *window = NULL;
 
-
 Display display = Display();
 ofstream myfile;
+
 int main(void) {
     //load the map for running testing examples
     myfile.open ("intention.txt");
@@ -58,15 +57,18 @@ int main(void) {
     vector<int> carintentions;
     for (int i = 0; i < model.getOtherCars().size(); i++)
         carintentions.push_back(1);
+    
     bool success = decision.getPath(model, mypath, carintentions);
+    
     vector<vector<vec2f>> mypaths = decision.getPaths();
     std::pair<std::string, vec2f> actionset;
     string filename = "coop";
-    
+
 // the change for car is mandatory
     bool change = true;
     srand(time(NULL));
     int i = 0;
+
     while(!glfwWindowShouldClose(window))
     {
         glClearColor(1.0f, 1.0f, 1.0f,1.0f);
@@ -74,14 +76,22 @@ int main(void) {
         Display::drawGoal(model.getFinish());
         Display::drawBlocks(model.getBlocks());
         Display::drawLine(model.getLine());
+        
         for(auto p:mypaths)
             drawPolygon(p);
+        
         display.drawCar(model.getHost());
         display.drawOtherCar(model.getOtherCars());
+        
         if (!gameover(model)) {
+            
+            
             //update cars here for further processing
            for (Car* car: cars) {
+               
+               //my car moves
                if (car == mycar) {
+                   //destination reaches, generate new paths
                    if (mypath.size() ==0 || abs(mycar->getPos().x-mypath[mypath.size()-1].x)<10)
                    {
                        success = decision.getPath(model, mypath, carintentions);
@@ -101,6 +111,7 @@ int main(void) {
                    }
                    drawPolygon(mypath);
                }
+               //other car moves
                else
                {
                    car->autonomousAction(mypath, model, NULL);
@@ -108,6 +119,7 @@ int main(void) {
                }
             }
        }
+
         glfwSwapBuffers(window);
         glfwPollEvents();
         over = (gameover(model)||glfwWindowShouldClose(window));
